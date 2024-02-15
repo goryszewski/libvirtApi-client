@@ -6,17 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"time"
 )
-
-const HostURL string = "http://127.0.0.1:8050"
-
-type Client struct {
-	HostURL    string
-	HTTPClient *http.Client
-	Token      string
-	Auth       AuthStruct
-}
 
 type AuthStruct struct {
 	Username string `json:"username"`
@@ -24,14 +14,14 @@ type AuthStruct struct {
 }
 
 type AuthResponse struct {
-	UserID   int    `json:"user_id`
-	Username string `json:"username`
+	UserID   int    `json:"user_id"`
+	Username string `json:"username"`
 	Token    string `json:"token"`
 }
 
 func (c *Client) SignIn() (*AuthResponse, error) {
 	if c.Auth.Username == "" || c.Auth.Password == "" {
-		return nil, fmt.Errorf("Sprawdz login i haslo")
+		return nil, fmt.Errorf("sprawdz login i haslo")
 	}
 
 	requestBody, err := json.Marshal(c.Auth)
@@ -40,7 +30,12 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 		return nil, err
 	}
 
-	request, err := http.NewRequest("POST", fmt.Sprintf("%/api/v1/auth", c.HostURL), strings.NewReader(string(requestBody)))
+	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/v1/auth", c.HostURL), strings.NewReader(string(requestBody)))
+
+	if err != nil {
+		return nil, err
+	}
+
 	body, err := c.doRequest(request, nil)
 	if err != nil {
 		return nil, err
@@ -48,37 +43,11 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 	authResponse := AuthResponse{}
 
 	err = json.Unmarshal(body, &authResponse)
-	return &authResponse, nil
-
-}
-
-func NewClient(hostname, username, password *string) (*Client, error) {
-	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-		HostURL:    HostURL,
-	}
-
-	if hostname != nil {
-		c.HostURL = *hostname
-	}
-
-	if username == nil || password == nil {
-		return &c, nil
-	}
-
-	c.Auth = AuthStruct{
-		Username: *username,
-		Password: *password,
-	}
-
-	authRequest, err := c.SignIn()
-
 	if err != nil {
 		return nil, err
 	}
-	c.Token = authRequest.Token
+	return &authResponse, nil
 
-	return &c, nil
 }
 
 func (c *Client) doRequest(request *http.Request, authToken *string) ([]byte, error) {
