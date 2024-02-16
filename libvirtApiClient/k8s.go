@@ -21,7 +21,7 @@ func (c *Client) GetFreeLB() (*LB, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request, nil)
+	body, err := c.doRequest(request, &c.Token)
 	if err != nil {
 		return nil, err
 	}

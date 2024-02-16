@@ -1,11 +1,11 @@
 package libvirtApiClient
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 type AuthStruct struct {
@@ -25,12 +25,11 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 	}
 
 	requestBody, err := json.Marshal(c.Auth)
-
 	if err != nil {
 		return nil, err
 	}
 
-	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/v1/auth", c.HostURL), strings.NewReader(string(requestBody)))
+	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/v1/auth", c.HostURL), bytes.NewBuffer(requestBody))
 
 	if err != nil {
 		return nil, err
@@ -55,8 +54,8 @@ func (c *Client) doRequest(request *http.Request, authToken *string) ([]byte, er
 	if authToken != nil {
 		token = *authToken
 	}
-
-	request.Header.Set("Authorizaton", token)
+	request.Header.Add("Authorization", "Bearer "+token)
+	request.Header.Set("Content-Type", "application/json")
 	response, err := c.HTTPClient.Do(request)
 
 	if err != nil {
