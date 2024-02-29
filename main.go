@@ -42,17 +42,17 @@ func main() {
 	err = client.BindLB(lb.Ip, service, nodes)
 
 	if err != nil {
-		log.Fatalf("[Error][main][004] BindLB return: ", err)
+		log.Fatalf("[Error][main][004] BindLB return: %v", err)
 	}
 
 	err = client.UnBindLB(service)
 	if err != nil {
-		log.Fatalf("[Error][main][005] UnBindLB return: ", err)
+		log.Fatalf("[Error][main][005] UnBindLB return: %v", err)
 	}
 
 	err = client.UpdateBind(service, nodes)
 	if err != nil {
-		log.Fatalf("[Error][main][006] UpdateBind return: ", err)
+		log.Fatalf("[Error][main][006] UpdateBind return: %v", err)
 	}
 
 }
