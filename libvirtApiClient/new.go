@@ -2,14 +2,17 @@ package libvirtApiClient
 
 import (
 	"net/http"
-	"time"
 )
 
 const HostURL string = "http://127.0.0.1:8050"
 
+type DoRequester interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type Client struct {
 	HostURL    string
-	HTTPClient *http.Client
+	HTTPClient DoRequester
 	Token      string
 	Auth       AuthStruct
 }
@@ -19,9 +22,9 @@ type Config struct {
 	Url      *string `json:"url"`
 }
 
-func NewClient(conf Config) (*Client, error) {
+func NewClient(conf Config, requester DoRequester) (*Client, error) {
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second},
+		HTTPClient: requester,
 		HostURL:    HostURL,
 	}
 

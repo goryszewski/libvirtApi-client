@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"time"
 
 	"github.com/goryszewski/libvirtApi-client/libvirtApiClient"
 )
@@ -21,7 +23,9 @@ func main() {
 		log.Fatalf("[Error][main][001] Unmarshal return: %v", err)
 	}
 
-	client, err := libvirtApiClient.NewClient(conf)
+	requester := &http.Client{Timeout: 10 * time.Second}
+
+	client, err := libvirtApiClient.NewClient(conf, requester)
 
 	if err != nil {
 		log.Fatalf("[Error][main][002] NewClient return: %v", err)

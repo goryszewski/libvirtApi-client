@@ -19,6 +19,10 @@ type AuthResponse struct {
 	Token    string `json:"token"`
 }
 
+func (c *Client) GetToken() string {
+	return c.Token
+}
+
 func (c *Client) SignIn() (*AuthResponse, error) {
 	if c.Auth.Username == "" || c.Auth.Password == "" {
 		return nil, fmt.Errorf("sprawdz login i haslo")
