@@ -18,7 +18,7 @@ func (c *Client) GetIPByNodeName(nodename string) (*Worker, error) {
 		return &Worker{}, err
 	}
 
-	body, err := c.doRequest(request, &c.Token)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return &Worker{}, err
 	}

@@ -21,7 +21,7 @@ func (c *Client) GetFreeLB() (*LB, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request, &c.Token)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *Client) BindLB(ip string, service string, nodes string) error {
 		return err
 	}
 
-	body, err := c.doRequest(request, nil)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func (c *Client) UnBindLB(service string) error {
 		return err
 	}
 
-	body, err := c.doRequest(request, nil)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return err
 	}

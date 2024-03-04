@@ -39,7 +39,7 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request, nil)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -53,12 +53,10 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 
 }
 
-func (c *Client) doRequest(request *http.Request, authToken *string) ([]byte, error) {
-	token := c.Token
-	if authToken != nil {
-		token = *authToken
+func (c *Client) doRequest(request *http.Request) ([]byte, error) {
+	if c.Token != "" {
+		request.Header.Add("Authorization", "Bearer "+c.Token)
 	}
-	request.Header.Add("Authorization", "Bearer "+token)
 	request.Header.Set("Content-Type", "application/json")
 	response, err := c.HTTPClient.Do(request)
 

@@ -3,6 +3,7 @@ package libvirtApiClient
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -13,12 +14,13 @@ type NetworkR struct {
 	Status string `json:"status"`
 }
 
-func (n *Client) GetNetwork(id types.Int64) (*NetworkR, error) {
-	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/network/%v", *n.HostURL, id), nil)
+func (c *Client) GetNetwork(id int) (*NetworkR, error) {
+	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/network/%v", c.HostURL, id), nil)
+
 	if err != nil {
 		return nil, err
 	}
-	body, err := n.doRequest(request)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -32,12 +34,12 @@ func (n *Client) GetNetwork(id types.Int64) (*NetworkR, error) {
 	return &net, nil
 }
 
-func (n *Client) DeleteNetwork(id types.Int64) error {
-	request, err := http.NewRequest("DELETE", fmt.Sprintf("%v/api/network/%v", *n.HostURL, id), nil)
+func (c *Client) DeleteNetwork(id int) error {
+	request, err := http.NewRequest("DELETE", fmt.Sprintf("%v/api/network/%v", c.HostURL, id), nil)
 	if err != nil {
 		return err
 	}
-	body, err := n.doRequest(request)
+	body, err := c.doRequest(request)
 	fmt.Print(body)
 	if err != nil {
 		return err
@@ -45,18 +47,18 @@ func (n *Client) DeleteNetwork(id types.Int64) error {
 	return nil
 }
 
-func (n *Client) CreateNetwork(name string) (*NetworkR, error) {
+func (c *Client) CreateNetwork(name string) (*NetworkR, error) {
 	payload, err := json.Marshal(map[string]string{"name": name})
 	if err != nil {
 		return nil, err
 	}
 
-	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/network", *n.HostURL), strings.NewReader(string(payload)))
+	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/network", c.HostURL), strings.NewReader(string(payload)))
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := n.doRequest(request)
+	body, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
