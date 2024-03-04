@@ -11,7 +11,7 @@ import (
 type NetworkR struct {
 	ID     int    `json:"id"`
 	Name   string `json:"name"`
-	Status string `json:"status"`
+	Status int    `json:"status"`
 }
 
 func (c *Client) GetNetwork(id int) (*NetworkR, error) {
