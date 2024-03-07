@@ -36,9 +36,9 @@ func (c *Client) GetFreeLB() (*LB, error) {
 
 	return &lb, nil
 }
-func (c *Client) BindLB(ip string, service string, nodes string) error {
+func (c *Client) BindLB(ip string, service string, workers []Worker) error {
 
-	payload, err := json.Marshal(map[string]string{"function": "BindLB", "ip": ip, "service": service, "Nodes": nodes})
+	payload, err := json.Marshal(map[string]string{"function": "BindLB", "ip": ip, "service": service, "workers": workers})
 	if err != nil {
 		return err
 	}
