@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestNewClient(t *testing.T) {
+func Test_NewClient(t *testing.T) {
 	cf := Config{}
 	requester := &http.Client{Timeout: 10 * time.Second}
 	client, err := NewClient(cf, requester)
@@ -15,7 +15,7 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestNewClient_URL(t *testing.T) {
+func Test_NewClient_URL(t *testing.T) {
 	cf := Config{}
 	requester := &http.Client{Timeout: 10 * time.Second}
 	client, err := NewClient(cf, requester)

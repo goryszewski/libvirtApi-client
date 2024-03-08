@@ -16,7 +16,7 @@ func (m *MockHTTPCLient) Do(req *http.Request) (*http.Response, error) {
 	return m.MockResponse, m.MockError
 }
 
-func TestGetToken(t *testing.T) {
+func Test_Auth_GetToken(t *testing.T) {
 	mockresponse := []byte(`{"user_id":1,"username":"2","token":"3"}`)
 	Username := "test"
 	Password := "test"
