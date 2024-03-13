@@ -67,6 +67,31 @@ func (c *Client) DeleteNetwork(id int) error {
 	return nil
 }
 
+func (c *Client) UpdateNetwork(network NetworkR) (*NetworkR, error) {
+	payload, err := json.Marshal(NetworkR)
+	if err != nil {
+		return nil, err
+	}
+
+	request, err := http.NewRequest("PUT", fmt.Sprintf("%v/api/network", c.HostURL), strings.NewReader(string(payload)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.doRequest(request)
+	if err != nil {
+		return nil, err
+	}
+	var net NetworkR
+
+	err = json.Unmarshal(body, &net)
+
+	if err != nil {
+		log.Fatal("Error Unmarshal CreateNetwork: ", err)
+	}
+	return &net, nil
+}
+
 func (c *Client) CreateNetwork(name string) (*NetworkR, error) {
 	payload, err := json.Marshal(map[string]string{"name": name})
 	if err != nil {
