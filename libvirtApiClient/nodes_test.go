@@ -7,15 +7,6 @@ import (
 	"testing"
 )
 
-type MockDoRequester struct {
-	MockResponse *http.Response
-	MockError    error
-}
-
-func (m *MockDoRequester) Do(req *http.Request) (*http.Response, error) {
-	return m.MockResponse, m.MockError
-}
-
 func Test_Nodes_GetIPByNodeName(t *testing.T) {
 
 	mockResponse := []byte(`{"Name":"TestNode","IP":{"Private":"192.168.1.1","Public":"8.8.8.8"},"Type":"ExampleType"}`)

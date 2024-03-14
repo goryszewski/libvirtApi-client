@@ -68,7 +68,7 @@ func (c *Client) DeleteNetwork(id int) error {
 }
 
 func (c *Client) UpdateNetwork(network NetworkR) (*NetworkR, error) {
-	payload, err := json.Marshal(NetworkR)
+	payload, err := json.Marshal(network)
 	if err != nil {
 		return nil, err
 	}

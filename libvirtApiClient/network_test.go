@@ -2,19 +2,11 @@ package libvirtApiClient
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"testing"
 )
-
-type MockDoRequester_network struct {
-	MockResponse *http.Response
-	MockError    error
-}
-
-func (m *MockDoRequester_network) Do(req *http.Request) (*http.Response, error) {
-	return m.MockResponse, m.MockError
-}
 
 func Test_Network_CreateNetwork(t *testing.T) {
 
@@ -105,6 +97,31 @@ func Test_Network_GetNetworkByName(t *testing.T) {
 	client, _ := NewClient(cf, requester)
 
 	network, err := client.GetNetworkByName("TestNode")
+
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+
+	if network.Name != "TestNode" {
+		t.Errorf("Expected network name to be 'TestNode', got '%v'", network.Name)
+	}
+}
+
+func Test_Network_UpdateNetwork(t *testing.T) {
+
+	update_network := NetworkR{Name: "TestNode", ID: 1, Status: 0}
+	mockResponse, _ := json.Marshal(update_network)
+	mockHttpResponse := &http.Response{
+		StatusCode: http.StatusOK,
+		Body:       io.NopCloser(bytes.NewBuffer(mockResponse)),
+		Header:     make(http.Header),
+	}
+
+	cf := Config{}
+	requester := &MockDoRequester{MockResponse: mockHttpResponse, MockError: nil}
+	client, _ := NewClient(cf, requester)
+
+	network, err := client.UpdateNetwork(update_network)
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)

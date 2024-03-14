@@ -7,15 +7,6 @@ import (
 	"testing"
 )
 
-type MockHTTPCLient struct {
-	MockResponse *http.Response
-	MockError    error
-}
-
-func (m *MockHTTPCLient) Do(req *http.Request) (*http.Response, error) {
-	return m.MockResponse, m.MockError
-}
-
 func Test_Auth_GetToken(t *testing.T) {
 	mockresponse := []byte(`{"user_id":1,"username":"2","token":"3"}`)
 	Username := "test"
@@ -29,7 +20,7 @@ func Test_Auth_GetToken(t *testing.T) {
 	}
 
 	cf := Config{&Username, &Password, &URL}
-	requester := &MockHTTPCLient{MockResponse: mockHttpResponse, MockError: nil}
+	requester := &MockDoRequester{MockResponse: mockHttpResponse, MockError: nil}
 	client, err := NewClient(cf, requester)
 	if client == nil {
 		t.Errorf("Expected not nil '%v'", err)

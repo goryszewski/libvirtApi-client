@@ -7,15 +7,6 @@ import (
 	"testing"
 )
 
-type MockDoRequester_k8s struct {
-	MockResponse *http.Response
-	MockError    error
-}
-
-func (m *MockDoRequester_k8s) Do(req *http.Request) (*http.Response, error) {
-	return m.MockResponse, m.MockError
-}
-
 func Test_k8s_GetFreeLB(t *testing.T) {
 
 	mockResponse := []byte(`{"id":1,"ip":"10.10.10.1","service":""}`)
