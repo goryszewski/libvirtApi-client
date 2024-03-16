@@ -36,21 +36,21 @@ func (c *Client) GetFreeLB() (*LB, error) {
 
 	return &lb, nil
 }
-func (c *Client) BindLB(ip string, service string, workers string) error {
+func (c *Client) BindLB(bind_payload bindServiceLB) string,error {
 
-	payload, err := json.Marshal(map[string]string{"function": "BindLB", "ip": ip, "service": service, "workers": workers})
+	payload, err := json.Marshal(bind_payload)
 	if err != nil {
-		return err
+		return "",err
 	}
 
 	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/v1/k8s/lb", c.HostURL), strings.NewReader(string(payload)))
 	if err != nil {
-		return err
+		return "",err
 	}
 
 	body, err := c.doRequest(request)
 	if err != nil {
-		return err
+		return "",err
 	}
 
 	var lb LB
@@ -60,7 +60,7 @@ func (c *Client) BindLB(ip string, service string, workers string) error {
 		log.Fatal("Error 003")
 	}
 
-	return nil
+	return lb.Ip,nil
 }
 
 func (c *Client) UnBindLB(service string) error {
