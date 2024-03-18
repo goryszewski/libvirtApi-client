@@ -11,19 +11,20 @@ type Worker struct {
 	Type string
 }
 
-type LB struct {
-	Id      int
-	Ip      string
-	service string
+type LoadBalancer struct {
+	Id int
+	Ip string
 }
 
-type portlb struct {
+type Port_Service struct {
 	Name     string `json:"name"`
 	Protocol string `json:"protocol"`
 	Port     int    `json:"port"`
 	NodePort int    `json:"nodeport"`
 }
 
-type bindServiceLB struct {
-	Ports []portlb `json:"ports"`
+type ServiceLoadBalancer struct {
+	Ports     []Port_Service `json:"ports"`
+	Name      string         `json:"name"`
+	Namespace string         `json:"namespace"`
 }
