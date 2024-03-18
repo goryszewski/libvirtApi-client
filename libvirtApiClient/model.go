@@ -1,7 +1,5 @@
 package libvirtApiClient
 
-import v1 "k8s.io/api/core/v1"
-
 type Ip struct {
 	Private string
 	Public  string
@@ -12,11 +10,6 @@ type Worker struct {
 	IP   Ip
 	Type string
 }
-type Service struct {
-	name      string
-	namespace string
-	port	  int
-}
 
 type LB struct {
 	Id      int
@@ -24,7 +17,13 @@ type LB struct {
 	service string
 }
 
+type portlb struct {
+	Name     string `json:"name"`
+	Protocol string `json:"protocol"`
+	Port     int    `json:"port"`
+	NodePort int    `json:"nodeport"`
+}
+
 type bindServiceLB struct {
-	service *v1.Service
-	workers []*v1.Node
+	Ports []portlb `json:"ports"`
 }
