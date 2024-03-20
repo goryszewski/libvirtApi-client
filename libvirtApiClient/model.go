@@ -22,9 +22,20 @@ type Port_Service struct {
 	Port     int    `json:"port"`
 	NodePort int    `json:"nodeport"`
 }
+type Node struct {
+	Name       string `json:"name"`
+	Public_ip  string `json:"public_ip"`
+	Private_ip string `json:"private_ip"`
+}
 
 type ServiceLoadBalancer struct {
 	Ports     []Port_Service `json:"ports"`
 	Name      string         `json:"name"`
 	Namespace string         `json:"namespace"`
+	Nodes     []Node         `json:"nodes"`
+}
+type ServiceLoadBalancerRespons struct {
+	ID any    `json:"_id"`
+	Ip string `json:"ip"`
+	*ServiceLoadBalancer
 }

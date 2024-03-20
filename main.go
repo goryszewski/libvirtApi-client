@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -33,30 +32,53 @@ func main() {
 
 	client.SignIn()
 
-	lb, err := client.GetFreeLB()
-	if err != nil {
-		log.Fatalf("[Error][main][003] GetFreeLB return: %v", err)
+	port := libvirtApiClient.Port_Service{
+		Name:     "test",
+		Protocol: "TCP",
+		Port:     1,
+		NodePort: 2,
+	}
+	var ports []libvirtApiClient.Port_Service
+
+	node1 := libvirtApiClient.Node{
+		Name:       "test",
+		Private_ip: "10.10.11.1",
+		Public_ip:  "192.168.1.1",
 	}
 
-	fmt.Println(lb)
+	var nodes []libvirtApiClient.Node
 
-	nodes := "test"
-	service := "test_some_service"
+	nodes = append(nodes, node1)
+	ports = append(ports, port)
 
-	err = client.BindLB(lb.Ip, service, nodes)
+	bind_payload := libvirtApiClient.ServiceLoadBalancer{Name: "nnn21", Namespace: "nnn", Ports: ports, Nodes: nodes}
+
+	ip, err := client.CreateLoadBalancer(bind_payload)
 
 	if err != nil {
 		log.Fatalf("[Error][main][004] BindLB return: %v", err)
 	}
 
-	err = client.UnBindLB(service)
-	if err != nil {
-		log.Fatalf("[Error][main][005] UnBindLB return: %v", err)
+	log.Printf("ip: [%v]", ip)
+	node2 := libvirtApiClient.Node{
+		Name:       "test2",
+		Private_ip: "10.10.11.1",
+		Public_ip:  "192.168.1.1",
 	}
+	nodes = append(nodes, node2)
 
-	err = client.UpdateBind(service, nodes)
+	update_payload := libvirtApiClient.ServiceLoadBalancer{Name: "nnn21", Namespace: "nnn", Ports: ports, Nodes: nodes}
+
+	err = client.UpdateLoadBalancer(update_payload)
 	if err != nil {
 		log.Fatalf("[Error][main][006] UpdateBind return: %v", err)
 	}
+	log.Printf("update error: [%v]", err)
+
+	err = client.DeleteLoadBalancer(bind_payload)
+	if err != nil {
+		log.Fatalf("[Error][main][005] UnBindLB return: %v", err)
+	}
+	log.Printf("delete error: [%v]", err)
 
 }

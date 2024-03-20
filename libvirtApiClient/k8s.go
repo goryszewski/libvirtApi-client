@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-// GET free ip /api/v1/k8s/lb
+// GET free ip /api/lb
 
 func (c *Client) GetFreeLB() (*LoadBalancer, error) {
-	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/v1/k8s/lb", c.HostURL), nil)
+	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb", c.HostURL), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, e
 		return "", err
 	}
 
-	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/v1/k8s/lb", c.HostURL), strings.NewReader(string(payload)))
+	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/lb", c.HostURL), strings.NewReader(string(payload)))
 	if err != nil {
 		log.Fatalf("Error CreateLoadBalancer NewRequest (%v)", err)
 		return "", err
@@ -51,7 +51,7 @@ func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, e
 		return "", err
 	}
 
-	var lb LoadBalancer
+	var lb ServiceLoadBalancerRespons
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {
@@ -62,14 +62,14 @@ func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, e
 	return lb.Ip, nil
 }
 
-func (c *Client) DeleteLoadBalancer(service string) error {
-	payload, err := json.Marshal(map[string]string{"service": service})
+func (c *Client) DeleteLoadBalancer(bind_payload ServiceLoadBalancer) error {
+	payload, err := json.Marshal(bind_payload)
 	if err != nil {
 		log.Fatalf("Error DeleteLoadBalancer Marshal (%v)", err)
 		return err
 	}
 
-	request, err := http.NewRequest("DELETE", fmt.Sprintf("%v/api/v1/k8s/lb", c.HostURL), strings.NewReader(string(payload)))
+	request, err := http.NewRequest("DELETE", fmt.Sprintf("%v/api/lb", c.HostURL), strings.NewReader(string(payload)))
 	if err != nil {
 		log.Fatalf("Error DeleteLoadBalancer NewRequest (%v)", err)
 		return err
@@ -81,7 +81,7 @@ func (c *Client) DeleteLoadBalancer(service string) error {
 		return err
 	}
 
-	var lb LoadBalancer
+	var lb ServiceLoadBalancerRespons
 
 	err = json.Unmarshal(body, &lb)
 
@@ -101,7 +101,7 @@ func (c *Client) UpdateLoadBalancer(bind_payload ServiceLoadBalancer) error {
 		return err
 	}
 
-	request, err := http.NewRequest("PUT", fmt.Sprintf("%v/api/v1/k8s/lb", c.HostURL), strings.NewReader(string(payload)))
+	request, err := http.NewRequest("PUT", fmt.Sprintf("%v/api/lb", c.HostURL), strings.NewReader(string(payload)))
 	if err != nil {
 		log.Fatalf("Error UpdateLoadBalancer NewRequest (%v)", err)
 		return err
@@ -113,7 +113,7 @@ func (c *Client) UpdateLoadBalancer(bind_payload ServiceLoadBalancer) error {
 		return err
 	}
 
-	var lb LoadBalancer
+	var lb ServiceLoadBalancerRespons
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {
