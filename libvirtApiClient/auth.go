@@ -70,9 +70,9 @@ func (c *Client) doRequest(request *http.Request) ([]byte, error) {
 		return nil, err
 	}
 
-	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status: %d, Body: %s", response.StatusCode, body)
-	}
+	// if response.StatusCode != http.StatusOK {
+	// 	return nil, fmt.Errorf("status: %d, Body: %s", response.StatusCode, body)
+	// }
 
 	return body, nil
 }
