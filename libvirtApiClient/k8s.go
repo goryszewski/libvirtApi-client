@@ -8,29 +8,31 @@ import (
 	"strings"
 )
 
-// GET free ip /api/lb
+func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (string, error) {
 
-func (c *Client) GetFreeLB() (*LoadBalancer, error) {
-	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb", c.HostURL), nil)
+	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb/%v/%v", c.HostURL, bind_payload.Namespace, bind_payload.Name), nil)
 	if err != nil {
-		return nil, err
+		log.Fatalf("Error GetLoadBalancer NewRequest (%v)", err)
+		return "", err
 	}
 
 	body, err := c.doRequest(request)
 	if err != nil {
-		return nil, err
+		log.Fatalf("Error GetLoadBalancer doRequest (%v)", err)
+		return "", err
 	}
 
-	var lb LoadBalancer
+	var lb ServiceLoadBalancerRespons
 
 	err = json.Unmarshal(body, &lb)
-
 	if err != nil {
-		log.Fatal("Error 003")
+		log.Fatalf("Error GetLoadBalancer Unmarshal (%v)", err)
+		return "", err
 	}
 
-	return &lb, nil
+	return lb.Ip, nil
 }
+
 func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, error) {
 
 	payload, err := json.Marshal(bind_payload)

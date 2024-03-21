@@ -2,14 +2,40 @@ package libvirtApiClient
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"testing"
 )
 
-func Test_k8s_GetFreeLB(t *testing.T) {
+var test_payload ServiceLoadBalancer = ServiceLoadBalancer{
+	Name:      "nnn21",
+	Namespace: "nnn",
+	Ports: []Port_Service{
+		Port_Service{
+			Name:     "test",
+			Protocol: "TCP",
+			Port:     1,
+			NodePort: 2,
+		},
+	},
+	Nodes: []Node{
+		Node{
+			Name:       "test",
+			Private_ip: "10.10.11.1",
+			Public_ip:  "192.168.1.1",
+		},
+	},
+}
+var test_response ServiceLoadBalancerRespons = ServiceLoadBalancerRespons{
+	ID:                  "1",
+	Ip:                  "10.10.10.1",
+	ServiceLoadBalancer: &test_payload,
+}
 
-	mockResponse := []byte(`{"id":1,"ip":"10.10.10.1","service":""}`)
+func Test_k8s_GetLoadBalancer(t *testing.T) {
+
+	mockResponse, _ := json.Marshal(test_response)
 
 	mockHttpResponse := &http.Response{
 		StatusCode: http.StatusOK,
@@ -21,14 +47,14 @@ func Test_k8s_GetFreeLB(t *testing.T) {
 	requester := &MockDoRequester{MockResponse: mockHttpResponse, MockError: nil}
 	client, _ := NewClient(cf, requester)
 
-	network, err := client.GetFreeLB()
+	ip, err := client.GetLoadBalancer(test_payload)
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 
-	if network.Ip != "10.10.10.1" {
-		t.Errorf("Expected lb ip to be '10.10.10.1', got '%v'", network.Ip)
+	if ip != test_response.Ip {
+		t.Errorf("Expected lb ip to be '10.10.10.1', got '%v'", ip)
 	}
 
 }

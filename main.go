@@ -56,9 +56,15 @@ func main() {
 	ip, err := client.CreateLoadBalancer(bind_payload)
 
 	if err != nil {
-		log.Fatalf("[Error][main][004] BindLB return: %v", err)
+		log.Fatalf("[Error][main][004] CreateLoadBalancer return: %v", err)
 	}
 
+	log.Printf("ip: [%v]", ip)
+
+	ip, err = client.GetLoadBalancer(bind_payload)
+	if err != nil {
+		log.Fatalf("[Error][main][004] GetLoadBalancer return: %v", err)
+	}
 	log.Printf("ip: [%v]", ip)
 	node2 := libvirtApiClient.Node{
 		Name:       "test2",
