@@ -8,29 +8,57 @@ import (
 	"strings"
 )
 
-func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (string, error) {
+func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (*ServiceLoadBalancerResponse, bool, error) {
 
 	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb/%v/%v", c.HostURL, bind_payload.Namespace, bind_payload.Name), nil)
 	if err != nil {
 		log.Fatalf("Error GetLoadBalancer NewRequest (%v)", err)
-		return "", err
+		return nil, false, err
 	}
 
 	body, err := c.doRequest(request)
 	if err != nil {
 		log.Fatalf("Error GetLoadBalancer doRequest (%v)", err)
-		return "", err
+		return nil, false, err
 	}
 
-	var lb ServiceLoadBalancerRespons
+	var lb ServiceLoadBalancerResponse
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {
 		log.Fatalf("Error GetLoadBalancer Unmarshal (%v)", err)
-		return "", err
+		return nil, false, err
+	}
+	if lb.Ip == "" { // DOTO change to http code 404
+		return nil, false, fmt.Errorf("LoadBalaner not exist")
 	}
 
-	return lb.Ip, nil
+	return &lb, true, nil
+}
+
+func (c *Client) GetAllLoadBalancers() ([]ServiceLoadBalancerResponse, error) {
+
+	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb", c.HostURL), nil)
+	if err != nil {
+		log.Fatalf("Error GetAllLoadBalancers NewRequest (%v)", err)
+		return nil, err
+	}
+
+	body, err := c.doRequest(request)
+	if err != nil {
+		log.Fatalf("Error GetAllLoadBalancers doRequest (%v)", err)
+		return nil, err
+	}
+
+	var lbs []ServiceLoadBalancerResponse
+
+	err = json.Unmarshal(body, &lbs)
+	if err != nil {
+		log.Fatalf("Error GetAllLoadBalancers Unmarshal (%v)", err)
+		return nil, err
+	}
+
+	return lbs, nil
 }
 
 func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, error) {
@@ -53,7 +81,7 @@ func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, e
 		return "", err
 	}
 
-	var lb ServiceLoadBalancerRespons
+	var lb ServiceLoadBalancerResponse
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {
@@ -83,7 +111,7 @@ func (c *Client) DeleteLoadBalancer(bind_payload ServiceLoadBalancer) error {
 		return err
 	}
 
-	var lb ServiceLoadBalancerRespons
+	var lb ServiceLoadBalancerResponse
 
 	err = json.Unmarshal(body, &lb)
 
@@ -115,7 +143,7 @@ func (c *Client) UpdateLoadBalancer(bind_payload ServiceLoadBalancer) error {
 		return err
 	}
 
-	var lb ServiceLoadBalancerRespons
+	var lb ServiceLoadBalancerResponse
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {

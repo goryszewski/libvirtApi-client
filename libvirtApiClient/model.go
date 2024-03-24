@@ -34,7 +34,7 @@ type ServiceLoadBalancer struct {
 	Namespace string         `json:"namespace"`
 	Nodes     []Node         `json:"nodes"`
 }
-type ServiceLoadBalancerRespons struct {
+type ServiceLoadBalancerResponse struct {
 	ID any    `json:"_id"`
 	Ip string `json:"ip"`
 	*ServiceLoadBalancer

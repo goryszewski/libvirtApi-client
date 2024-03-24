@@ -27,7 +27,7 @@ var test_payload ServiceLoadBalancer = ServiceLoadBalancer{
 		},
 	},
 }
-var test_response ServiceLoadBalancerRespons = ServiceLoadBalancerRespons{
+var test_response ServiceLoadBalancerResponse = ServiceLoadBalancerResponse{
 	ID:                  "1",
 	Ip:                  "10.10.10.1",
 	ServiceLoadBalancer: &test_payload,
@@ -47,13 +47,17 @@ func Test_k8s_GetLoadBalancer(t *testing.T) {
 	requester := &MockDoRequester{MockResponse: mockHttpResponse, MockError: nil}
 	client, _ := NewClient(cf, requester)
 
-	ip, err := client.GetLoadBalancer(test_payload)
+	ip, is_exist, err := client.GetLoadBalancer(test_payload)
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 
-	if ip != test_response.Ip {
+	if !is_exist {
+		t.Errorf("LB not exist")
+	}
+
+	if ip.Ip != test_response.Ip {
 		t.Errorf("Expected lb ip to be '10.10.10.1', got '%v'", ip)
 	}
 
