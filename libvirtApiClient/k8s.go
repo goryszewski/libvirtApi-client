@@ -30,7 +30,7 @@ func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (*ServiceLoad
 		return nil, false, err
 	}
 	if lb.Ip == "" { // DOTO change to http code 404
-		return nil, false, fmt.Errorf("LoadBalaner not exist")
+		return nil, false, nil
 	}
 
 	return &lb, true, nil

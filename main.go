@@ -61,11 +61,11 @@ func main() {
 
 	log.Printf("ip: [%v]", ip)
 
-	ip, err = client.GetLoadBalancer(bind_payload)
+	ip, exist, err := client.GetLoadBalancer(bind_payload)
 	if err != nil {
 		log.Fatalf("[Error][main][004] GetLoadBalancer return: %v", err)
 	}
-	log.Printf("ip: [%v]", ip)
+	log.Printf("ip: [%v][%v]", ip, exist)
 	node2 := libvirtApiClient.Node{
 		Name:       "test2",
 		Private_ip: "10.10.11.1",
