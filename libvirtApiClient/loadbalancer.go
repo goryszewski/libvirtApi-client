@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (*ServiceLoadBalancerResponse, bool, error) {
+func (c *Client) GetLoadBalancer(bind_payload LoadBalancer) (*LoadBalancer, bool, error) {
 
 	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb/%v/%v", c.HostURL, bind_payload.Namespace, bind_payload.Name), nil)
 	if err != nil {
@@ -16,19 +16,20 @@ func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (*ServiceLoad
 		return nil, false, err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		log.Fatalf("Error GetLoadBalancer doRequest (%v)", err)
 		return nil, false, err
 	}
 
-	var lb ServiceLoadBalancerResponse
+	var lb LoadBalancer
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {
 		log.Fatalf("Error GetLoadBalancer Unmarshal (%v)", err)
 		return nil, false, err
 	}
+	log.Printf("Internal DEBUG [%+v]", lb)
 	if lb.Ip == "" { // DOTO change to http code 404
 		return nil, false, nil
 	}
@@ -36,7 +37,7 @@ func (c *Client) GetLoadBalancer(bind_payload ServiceLoadBalancer) (*ServiceLoad
 	return &lb, true, nil
 }
 
-func (c *Client) GetAllLoadBalancers() ([]ServiceLoadBalancerResponse, error) {
+func (c *Client) GetAllLoadBalancers() ([]LoadBalancer, error) {
 
 	request, err := http.NewRequest("GET", fmt.Sprintf("%v/api/lb", c.HostURL), nil)
 	if err != nil {
@@ -44,13 +45,13 @@ func (c *Client) GetAllLoadBalancers() ([]ServiceLoadBalancerResponse, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		log.Fatalf("Error GetAllLoadBalancers doRequest (%v)", err)
 		return nil, err
 	}
 
-	var lbs []ServiceLoadBalancerResponse
+	var lbs []LoadBalancer
 
 	err = json.Unmarshal(body, &lbs)
 	if err != nil {
@@ -61,7 +62,7 @@ func (c *Client) GetAllLoadBalancers() ([]ServiceLoadBalancerResponse, error) {
 	return lbs, nil
 }
 
-func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, error) {
+func (c *Client) CreateLoadBalancer(bind_payload LoadBalancer) (string, error) {
 
 	payload, err := json.Marshal(bind_payload)
 	if err != nil {
@@ -75,13 +76,13 @@ func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, e
 		return "", err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		log.Fatalf("Error CreateLoadBalancer doRequest (%v)", err)
 		return "", err
 	}
 
-	var lb ServiceLoadBalancerResponse
+	var lb LoadBalancer
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {
@@ -92,7 +93,7 @@ func (c *Client) CreateLoadBalancer(bind_payload ServiceLoadBalancer) (string, e
 	return lb.Ip, nil
 }
 
-func (c *Client) DeleteLoadBalancer(bind_payload ServiceLoadBalancer) error {
+func (c *Client) DeleteLoadBalancer(bind_payload LoadBalancer) error {
 	payload, err := json.Marshal(bind_payload)
 	if err != nil {
 		log.Fatalf("Error DeleteLoadBalancer Marshal (%v)", err)
@@ -105,13 +106,13 @@ func (c *Client) DeleteLoadBalancer(bind_payload ServiceLoadBalancer) error {
 		return err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		log.Fatalf("Error DeleteLoadBalancer doRequest (%v)", err)
 		return err
 	}
 
-	var lb ServiceLoadBalancerResponse
+	var lb LoadBalancer
 
 	err = json.Unmarshal(body, &lb)
 
@@ -123,7 +124,7 @@ func (c *Client) DeleteLoadBalancer(bind_payload ServiceLoadBalancer) error {
 
 }
 
-func (c *Client) UpdateLoadBalancer(bind_payload ServiceLoadBalancer) error {
+func (c *Client) UpdateLoadBalancer(bind_payload LoadBalancer) error {
 
 	payload, err := json.Marshal(bind_payload)
 	if err != nil {
@@ -137,13 +138,13 @@ func (c *Client) UpdateLoadBalancer(bind_payload ServiceLoadBalancer) error {
 		return err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		log.Fatalf("Error UpdateLoadBalancer doRequest (%v)", err)
 		return err
 	}
 
-	var lb ServiceLoadBalancerResponse
+	var lb LoadBalancer
 
 	err = json.Unmarshal(body, &lb)
 	if err != nil {

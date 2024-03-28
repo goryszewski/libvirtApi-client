@@ -9,7 +9,7 @@ import (
 
 func Test_Nodes_GetIPByNodeName(t *testing.T) {
 
-	mockResponse := []byte(`{"Name":"TestNode","IP":{"Private":"192.168.1.1","Public":"8.8.8.8"},"Type":"ExampleType"}`)
+	mockResponse := []byte(`{"Name":"TestNode","Internal":"192.168.1.1","External":"8.8.8.8","Type":"ExampleType"}`)
 
 	mockHttpResponse := &http.Response{
 		StatusCode: http.StatusOK,
@@ -31,12 +31,12 @@ func Test_Nodes_GetIPByNodeName(t *testing.T) {
 		t.Errorf("Expected worker name to be 'TestNode', got '%v'", worker.Name)
 	}
 
-	if worker.IP.Private != "192.168.1.1" {
-		t.Errorf("Expected IP.Private to be '192.168.1.1', got '%v'", worker.IP.Private)
+	if worker.Internal != "192.168.1.1" {
+		t.Errorf("Expected IP.Internal to be '192.168.1.1', got '%v'", worker.Internal)
 	}
 
-	if worker.IP.Public != "8.8.8.8" {
-		t.Errorf("Expected IP.Public to be '8.8.8.8', got '%v'", worker.IP.Public)
+	if worker.External != "8.8.8.8" {
+		t.Errorf("Expected IP.External to be '8.8.8.8', got '%v'", worker.External)
 	}
 
 }

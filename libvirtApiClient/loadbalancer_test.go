@@ -8,34 +8,30 @@ import (
 	"testing"
 )
 
-var test_payload ServiceLoadBalancer = ServiceLoadBalancer{
+var data LoadBalancer = LoadBalancer{
 	Name:      "nnn21",
 	Namespace: "nnn",
 	Ports: []Port_Service{
 		Port_Service{
 			Name:     "test",
 			Protocol: "TCP",
-			Port:     1,
-			NodePort: 2,
+			Port:     80,
+			NodePort: 32011,
 		},
 	},
 	Nodes: []Node{
 		Node{
-			Name:       "test",
-			Private_ip: "10.10.11.1",
-			Public_ip:  "192.168.1.1",
+			Name:     "test",
+			Internal: "10.10.11.1",
+			External: "192.168.1.1",
 		},
 	},
-}
-var test_response ServiceLoadBalancerResponse = ServiceLoadBalancerResponse{
-	ID:                  "1",
-	Ip:                  "10.10.10.1",
-	ServiceLoadBalancer: &test_payload,
+	Ip: "10.10.10.1",
 }
 
 func Test_k8s_GetLoadBalancer(t *testing.T) {
 
-	mockResponse, _ := json.Marshal(test_response)
+	mockResponse, _ := json.Marshal(data)
 
 	mockHttpResponse := &http.Response{
 		StatusCode: http.StatusOK,
@@ -47,7 +43,7 @@ func Test_k8s_GetLoadBalancer(t *testing.T) {
 	requester := &MockDoRequester{MockResponse: mockHttpResponse, MockError: nil}
 	client, _ := NewClient(cf, requester)
 
-	ip, is_exist, err := client.GetLoadBalancer(test_payload)
+	loadbalancer, is_exist, err := client.GetLoadBalancer(data)
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -57,8 +53,8 @@ func Test_k8s_GetLoadBalancer(t *testing.T) {
 		t.Errorf("LB not exist")
 	}
 
-	if ip.Ip != test_response.Ip {
-		t.Errorf("Expected lb ip to be '10.10.10.1', got '%v'", ip)
+	if loadbalancer.Ip != data.Ip {
+		t.Errorf("Expected lb ip to be '%v', got '%v'", data.Ip, loadbalancer.Ip)
 	}
 
 }

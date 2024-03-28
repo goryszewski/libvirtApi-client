@@ -1,19 +1,10 @@
 package libvirtApiClient
 
-type Ip struct {
-	Private string
-	Public  string
-}
-
-type Worker struct {
-	Name string
-	IP   Ip
-	Type string
-}
-
-type LoadBalancer struct {
-	Id int
-	Ip string
+type Worker struct { // TODO refactor / use node
+	Name     string `json:"name"`
+	Type     string `json:"type"`
+	Internal string `json:"internal"`
+	External string `json:"external"`
 }
 
 type Port_Service struct {
@@ -23,19 +14,18 @@ type Port_Service struct {
 	NodePort int    `json:"nodeport"`
 }
 type Node struct {
-	Name       string `json:"name"`
-	Public_ip  string `json:"public_ip"`
-	Private_ip string `json:"private_ip"`
+	Name     string `json:"name"`
+	Internal string `json:"internal"`
+	External string `json:"external"`
 }
 
-type ServiceLoadBalancer struct {
+type LoadBalancer struct {
 	Ports     []Port_Service `json:"ports"`
-	Name      string         `json:"name"`
-	Namespace string         `json:"namespace"`
 	Nodes     []Node         `json:"nodes"`
-}
-type ServiceLoadBalancerResponse struct {
-	ID any    `json:"_id"`
-	Ip string `json:"ip"`
-	*ServiceLoadBalancer
+	Namespace string         `json:"namespace"`
+	Name      string         `json:"name"`
+	Ip        string         `json:"ip,omitempty"`
+	//	Id        struct {
+	//		OID string `json:"skipempty,omitempty"`
+	//	} `json:"skipempty,omitempty"`
 }

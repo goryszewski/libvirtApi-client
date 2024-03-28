@@ -20,7 +20,7 @@ func (c *Client) GetNetwork(id int) (*NetworkR, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (c *Client) GetNetworkByName(name string) (*NetworkR, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *Client) DeleteNetwork(id int) error {
 	if err != nil {
 		return err
 	}
-	_, err = c.doRequest(request)
+	_, _, err = c.doRequest(request)
 
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func (c *Client) UpdateNetwork(network NetworkR) (*NetworkR, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (c *Client) CreateNetwork(name string) (*NetworkR, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}

@@ -39,7 +39,7 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 		return nil, err
 	}
 
-	body, err := c.doRequest(request)
+	body, _, err := c.doRequest(request)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *Client) SignIn() (*AuthResponse, error) {
 
 }
 
-func (c *Client) doRequest(request *http.Request) ([]byte, error) {
+func (c *Client) doRequest(request *http.Request) ([]byte, int, error) {
 	if c.Token != "" {
 		request.Header.Add("Authorization", "Bearer "+c.Token)
 	}
@@ -61,18 +61,14 @@ func (c *Client) doRequest(request *http.Request) ([]byte, error) {
 	response, err := c.HTTPClient.Do(request)
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	// if response.StatusCode != http.StatusOK {
-	// 	return nil, fmt.Errorf("status: %d, Body: %s", response.StatusCode, body)
-	// }
-
-	return body, nil
+	return body, response.StatusCode, nil
 }
