@@ -41,9 +41,9 @@ func main() {
 	var ports []libvirtApiClient.Port_Service
 
 	node1 := libvirtApiClient.Node{
-		Name:       "test",
-		Private_ip: "10.10.11.1",
-		Public_ip:  "192.168.1.1",
+		Name:     "test",
+		Internal: "10.10.11.1",
+		External: "192.168.1.1",
 	}
 
 	var nodes []libvirtApiClient.Node
@@ -51,8 +51,15 @@ func main() {
 	nodes = append(nodes, node1)
 	ports = append(ports, port)
 
-	bind_payload := libvirtApiClient.ServiceLoadBalancer{Name: "nnn21", Namespace: "nnn", Ports: ports, Nodes: nodes}
+	// Test not exist lb
+	not_exist := libvirtApiClient.LoadBalancer{Name: "not_exist", Namespace: "not_exist", Ports: ports, Nodes: nodes}
+	loadbalancer, exist, err := client.GetLoadBalancer(not_exist)
+	log.Printf("[%+v] | [%v] | error:[%v]", loadbalancer, exist, err)
+	if err != nil {
+		log.Fatalf("[Error][main][004] GetLoadBalancer return: %v", err)
+	}
 
+	bind_payload := libvirtApiClient.LoadBalancer{Name: "nnn21", Namespace: "nnn", Ports: ports, Nodes: nodes}
 	ip, err := client.CreateLoadBalancer(bind_payload)
 
 	if err != nil {
@@ -61,30 +68,38 @@ func main() {
 
 	log.Printf("ip: [%v]", ip)
 
-	ip, exist, err := client.GetLoadBalancer(bind_payload)
+	loadbalancer, exist, err = client.GetLoadBalancer(bind_payload)
 	if err != nil {
 		log.Fatalf("[Error][main][004] GetLoadBalancer return: %v", err)
 	}
-	log.Printf("ip: [%v][%v]", ip, exist)
+	log.Printf("ip: [%v][%v]", loadbalancer.Ip, exist)
 	node2 := libvirtApiClient.Node{
-		Name:       "test2",
-		Private_ip: "10.10.11.1",
-		Public_ip:  "192.168.1.1",
+		Name:     "test2",
+		Internal: "10.10.11.1",
+		External: "192.168.1.1",
 	}
 	nodes = append(nodes, node2)
 
-	update_payload := libvirtApiClient.ServiceLoadBalancer{Name: "nnn21", Namespace: "nnn", Ports: ports, Nodes: nodes}
+	update_payload := libvirtApiClient.LoadBalancer{Name: "nnn21", Namespace: "nnn", Ports: ports, Nodes: nodes}
 
 	err = client.UpdateLoadBalancer(update_payload)
 	if err != nil {
-		log.Fatalf("[Error][main][006] UpdateBind return: %v", err)
+		log.Fatalf("[Error][main][006] UpdateBind return Error: %v", err)
 	}
-	log.Printf("update error: [%v]", err)
+	log.Printf("update ok: [%v]", err)
 
 	err = client.DeleteLoadBalancer(bind_payload)
 	if err != nil {
-		log.Fatalf("[Error][main][005] UnBindLB return: %v", err)
+		log.Fatalf("[Error][main][005] UnBindLB return Error: %v", err)
 	}
-	log.Printf("delete error: [%v]", err)
+	log.Printf("delete ok: [%v]", err)
+
+	//  create disk
+
+	err = client.GetDisks()
+	if err != nil {
+		log.Fatalf("[Error][main][CreateDisk] GetDisks return Error: %v", err)
+	}
+	log.Printf("CreateDisk ok: [%v]", err)
 
 }

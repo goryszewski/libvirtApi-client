@@ -29,3 +29,9 @@ type LoadBalancer struct {
 	//		OID string `json:"skipempty,omitempty"`
 	//	} `json:"skipempty,omitempty"`
 }
+
+type Disk struct {
+	ID    int `json:"id"`
+	VM_ID int `json:"vm_id"`
+	Size  int `json:"size"`
+}
