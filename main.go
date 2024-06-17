@@ -86,20 +86,60 @@ func main() {
 	if err != nil {
 		log.Fatalf("[Error][main][006] UpdateBind return Error: %v", err)
 	}
-	log.Printf("update ok: [%v]", err)
+	log.Printf("update ok: [%v]\n", err)
 
 	err = client.DeleteLoadBalancer(bind_payload)
 	if err != nil {
 		log.Fatalf("[Error][main][005] UnBindLB return Error: %v", err)
 	}
-	log.Printf("delete ok: [%v]", err)
+	log.Printf("delete ok: [%v]\n", err)
 
-	//  create disk
+	// BEGIN DISK
 
-	err = client.GetDisks()
+	disks, err := client.GetDisks()
 	if err != nil {
-		log.Fatalf("[Error][main][CreateDisk] GetDisks return Error: %v", err)
+		log.Fatalf("[Error][main][GetDisks]  return Error: %v", err)
 	}
-	log.Printf("CreateDisk ok: [%v]", err)
+	log.Printf("GetDisks ok: [%+v]\n", disks)
 
+	disk, err := client.CreateDisk(10)
+	if err != nil {
+		log.Fatalf("[Error][main][CreateDisk]  return Error: %v", err)
+	}
+	log.Printf("CreateDisk ok: [%+v]\n", disk)
+
+	// BEGIN BIND
+
+	err = client.BindDisk(disk.ID, "worker01.autok8s.xyz")
+	if err != nil {
+		log.Fatalf("[Error][main][BindDisk] return Error: %v", err)
+	}
+	log.Printf("BindDisk ok: [%+v]\n", err)
+
+	err = client.UnBindDisk(disk.ID, "worker01.autok8s.xyz")
+	if err != nil {
+		log.Fatalf("[Error][main][UnBindDisk]  return Error: %v", err)
+	}
+	log.Printf("UnBindDisk ok: [%+v]\n", err)
+
+	// END BIND
+	disks, err = client.GetDisks()
+	if err != nil {
+		log.Fatalf("[Error][main][GetDisks]  return Error: %v", err)
+	}
+	log.Printf("GetDisks ok: [%+v]\n", disks)
+
+	err = client.DeleteDisk(disk.ID)
+	if err != nil {
+		log.Fatalf("[Error][main][DeleteDisk]  return Error: %v", err)
+	}
+	log.Printf("DeleteDisk ok: [%+v]\n", err)
+
+	disks, err = client.GetDisks()
+	if err != nil {
+		log.Fatalf("[Error][main][GetDisks]  return Error: %v", err)
+	}
+	log.Printf("GetDisks ok: [%+v]\n", disks)
+
+	// END DISK
 }
