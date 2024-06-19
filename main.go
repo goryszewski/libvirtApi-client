@@ -110,11 +110,11 @@ func main() {
 
 	// BEGIN BIND
 
-	err = client.BindDisk(disk.ID, "worker01.autok8s.xyz")
+	diskbind, err := client.BindDisk(disk.ID, "worker01.autok8s.xyz")
 	if err != nil {
 		log.Fatalf("[Error][main][BindDisk] return Error: %v", err)
 	}
-	log.Printf("BindDisk ok: [%+v]\n", err)
+	log.Printf("BindDisk ok: [%+v]\n", diskbind)
 
 	err = client.UnBindDisk(disk.ID, "worker01.autok8s.xyz")
 	if err != nil {

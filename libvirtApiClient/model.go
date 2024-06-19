@@ -35,3 +35,10 @@ type Disk struct {
 	VM_ID int `json:"vm_id"`
 	Size  int `json:"size"`
 }
+
+type BindDiskResponse struct {
+	ID      string `json:"id"`
+	Path    string `json:"path"`
+	Target  string `json:"target"`
+	Address string `json:"address"`
+}
