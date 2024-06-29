@@ -1,5 +1,22 @@
 package libvirtApiClient
 
+type NetworkInterface struct {
+	Mac     string `json:"mac"`
+	Ip      string `json:"ip"`
+	Name    string `json:"name"`
+	Source  string `json:"source"`
+	Model   string `json:"model"`
+	Address string `json:"address"`
+}
+
+type NodeV2 struct {
+	ID        int                `json:"id"`
+	Name      string             `json:"name"`
+	Interface []NetworkInterface `json:"interface"`
+	Type      string             `json:"type"`
+	Disks     []Disk             `json:"disks"`
+}
+
 type Worker struct { // TODO refactor / use node
 	Name     string `json:"name"`
 	Type     string `json:"type"`

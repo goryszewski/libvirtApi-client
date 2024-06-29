@@ -16,6 +16,7 @@ type Client struct {
 	Token      string
 	Auth       AuthStruct
 }
+
 type Config struct {
 	Username *string `json:"username"`
 	Password *string `json:"password"`

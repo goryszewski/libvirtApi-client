@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -31,6 +32,14 @@ func main() {
 	}
 
 	client.SignIn()
+
+	test, err := client.GetNodes()
+
+	fmt.Printf("\n[1][%v] %#+v \n", err, test)
+
+	test2, err := client.GetNodeByName("master01.autok8s.xyz")
+
+	fmt.Printf("\n[2][%v] %#+v \n", err, test2)
 
 	port := libvirtApiClient.Port_Service{
 		Name:     "test",
