@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetNodeByIp(ip string) (*NodeV2, error) {
+func (c *Client) GetNodeByMetadata() (*NodeV2, error) {
 	var url string = fmt.Sprintf("%s/api/v2/metadata", c.HostURL)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
