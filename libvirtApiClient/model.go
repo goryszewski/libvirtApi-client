@@ -30,10 +30,10 @@ type Port_Service struct {
 	Port     int    `json:"port"`
 	NodePort int    `json:"nodeport"`
 }
+
 type Node struct {
-	Name     string `json:"name"`
-	Internal string `json:"internal"`
-	External string `json:"external"`
+	Name string `json:"name"`
+	IP   string `json:"ip"`
 }
 
 type LoadBalancer struct {

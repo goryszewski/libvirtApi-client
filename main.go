@@ -50,9 +50,8 @@ func main() {
 	var ports []libvirtApiClient.Port_Service
 
 	node1 := libvirtApiClient.Node{
-		Name:     "test",
-		Internal: "10.10.11.1",
-		External: "192.168.1.1",
+		Name: "test",
+		IP:   "10.10.11.1",
 	}
 
 	var nodes []libvirtApiClient.Node
@@ -83,9 +82,8 @@ func main() {
 	}
 	log.Printf("ip: [%v][%v]", loadbalancer.Ip, exist)
 	node2 := libvirtApiClient.Node{
-		Name:     "test2",
-		Internal: "10.10.11.1",
-		External: "192.168.1.1",
+		Name: "test2",
+		IP:   "10.10.11.1",
 	}
 	nodes = append(nodes, node2)
 

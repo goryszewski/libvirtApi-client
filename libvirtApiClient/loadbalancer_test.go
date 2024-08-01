@@ -21,9 +21,8 @@ var data LoadBalancer = LoadBalancer{
 	},
 	Nodes: []Node{
 		Node{
-			Name:     "test",
-			Internal: "10.10.11.1",
-			External: "192.168.1.1",
+			Name: "test",
+			IP:   "10.10.11.1",
 		},
 	},
 	Ip: "10.10.10.1",
