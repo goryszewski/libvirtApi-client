@@ -3,8 +3,40 @@ package libvirtApiClient
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"strings"
 )
+
+// to fix - test
+type PayloadAddSsh struct {
+	User string `json:"user"`
+	Key  []byte `json:"key"`
+}
+
+func (c *Client) addSSHKeyToInstance(node NodeV2, user string, keyData []byte) error {
+
+	data := PayloadAddSsh{User: user, Key: keyData}
+	payload, err := json.Marshal(data)
+	if err != nil {
+		log.Fatalf("Error addSSHKeyToInstance Marshal (%v)", err)
+		return err
+	}
+
+	request, err := http.NewRequest("POST", fmt.Sprintf("%v/api/v2/node/%v/ssh", c.HostURL, node.Name), strings.NewReader(string(payload)))
+	if err != nil {
+		log.Fatalf("Error addSSHKeyToInstance NewRequest (%v)", err)
+		return err
+	}
+
+	_, _, err = c.doRequest(request)
+	if err != nil {
+		log.Fatalf("Error addSSHKeyToInstance doRequest (%v)", err)
+		return err
+	}
+
+	return nil
+}
 
 func (c *Client) GetNodeByMetadata() (*NodeV2, error) {
 	var url string = fmt.Sprintf("%s/api/v2/metadata", c.HostURL)
